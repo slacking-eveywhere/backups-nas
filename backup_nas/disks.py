@@ -9,7 +9,11 @@ DISK_SIZE_UNIT_LIST = ["o", "ko", "mo", "go", "to"]
 
 class Disks:
     def __init__(self):
-        self.disks = []
+        with open(DISKS_FILE, 'r') as stream:
+            try:
+                self.disks = [Disk(index, **disk) for index, disk in enumerate(yaml.safe_load(stream).get("movies_disks"), start=1)]
+            except yaml.YAMLError as exc:
+                self.disks = []
 
     def __len__(self) -> int:
         return len(self.disks)
@@ -17,14 +21,6 @@ class Disks:
     def __iter__(self) -> iter:
         for disk in self.disks:
             yield disk
-
-    def load(self) -> 'Disks':
-        with open(DISKS_FILE, 'r') as stream:
-            try:
-                self.disks = [Disk(index, **disk) for index, disk in enumerate(yaml.safe_load(stream).get("movies_disks"), start=1)]
-                return self
-            except yaml.YAMLError as exc:
-                print(exc)
 
     def get_disk_by_index(self, disk_index: int) -> 'Disk':
         try:

@@ -4,9 +4,7 @@
 from pathlib import Path
 from datetime import datetime
 from typing import Generator
-from database import Connector
-
-DATABASE_NAME = "database.sql"
+from backup_nas.database import Connector
 
 
 class Movie:
@@ -31,8 +29,8 @@ class Movie:
 
 
 class MovieModel:
-    def __init__(self, movie=None):
-        self.connector = Connector(DATABASE_NAME)
+    def __init__(self, database_name):
+        self.connector = Connector(database_name)
 
     def get_higher_disk_id(self) -> int:
         sql_command = """
@@ -92,11 +90,12 @@ class MovieModel:
         self.connector.execute(sql_command, params)
 
 
-Connector(DATABASE_NAME).execute("""CREATE TABLE if not exists movies(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    path TEXT NOT NULL UNIQUE,
-    size INT NOT NULL,
-    create_time TIMESTAMP NOT NULL,
-    disk_id INT DEFAULT NULL);
-""")
+def create_movie_database_if_exists(database_name):
+    Connector(database_name).execute("""CREATE TABLE if not exists movies(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT NOT NULL UNIQUE,
+        size INT NOT NULL,
+        create_time TIMESTAMP NOT NULL,
+        disk_id INT DEFAULT NULL);
+    """)
 

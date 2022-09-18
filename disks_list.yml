@@ -42,3 +42,6 @@ movies_disks:
   - name: disk_14
     size: 1.8
     unit: To
+  - name: disk_15
+    size: 1.8
+    unit: To

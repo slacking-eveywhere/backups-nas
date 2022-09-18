@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
 import math
+from pathlib import Path
 from datetime import datetime
-from typing import Generator
-from movie_model import MovieModel
-from disks import Disks
+from backup_nas.movie_model import MovieModel, create_movie_database_if_exists
+from backup_nas.disks import Disks
 
 
 INSERT_MOVIE = False
 MOVIES_DIRECTORY_PATH = Path("/data-dir/films")
-
+DATABASE_NAME = "database.sql"
 FILE_SIZE_UNITS = ["B", "KB", "MB", "GB", "TB"]
 
 
@@ -32,20 +31,21 @@ def humanize_size_output_from_bytes(size_in_bytes):
 
 if __name__ == "__main__":
 
-    if INSERT_MOVIE:
-        for movie_path, movie_size, movie_insert_date in list_movies_with_name_size_and_insert_date(MOVIES_DIRECTORY_PATH):
-            MovieModel().insert(movie_path, movie_size, movie_insert_date)
+    create_movie_database_if_exists(DATABASE_NAME)
 
+    movie_model = MovieModel(DATABASE_NAME)
+    disks_list = Disks()
 
-    disks_list = Disks().load()
-    disk_id = MovieModel().get_higher_disk_id() or 1
-    movies = MovieModel().fetch_movies_not_disk_tagged()
+    # for movie_path, movie_size, movie_insert_date in list_movies_with_name_size_and_insert_date(MOVIES_DIRECTORY_PATH):
+    #     movie_model.insert(movie_path, movie_size, movie_insert_date)
 
-    for movie in movies:
+    disk_id = movie_model.get_higher_disk_id() or 1
+
+    for movie in movie_model.fetch_movies_not_disk_tagged():
         limit = disks_list.get_disk_by_index(disk_id).size
-        if MovieModel().get_movie_size_sum_by_disk_id(disk_id) + movie.size >= limit:
-            disk_id = MovieModel().get_higher_disk_id() + 1
-        MovieModel().update_movie_with_disk_tag(movie.id, disk_id)
+        if movie_model.get_movie_size_sum_by_disk_id(disk_id) + movie.size >= limit:
+            disk_id = movie_model.get_higher_disk_id() + 1
+        movie_model.update_movie_with_disk_tag(movie.id, disk_id)
 
-    print(humanize_size_output_from_bytes(MovieModel().get_movie_size_sum_by_disk_id(14)))
+    print(humanize_size_output_from_bytes(movie_model.get_movie_size_sum_by_disk_id(14)))
 
