@@ -1,0 +1,44 @@
+---
+disks:
+  - name: disk_1
+    size: 1.8
+    unit: To
+  - name: disk_2
+    size: 1.8
+    unit: To
+  - name: disk_3
+    size: 1.8
+    unit: To
+  - name: disk_4
+    size: 1.8
+    unit: To
+  - name: disk_5
+    size: 1.8
+    unit: To
+  - name: disk_6
+    size: 1.8
+    unit: To
+  - name: disk_7
+    size: 1.8
+    unit: To
+  - name: disk_8
+    size: 1.8
+    unit: To
+  - name: disk_9
+    size: 1.8
+    unit: To
+  - name: disk_10
+    size: 1.8
+    unit: To
+  - name: disk_11
+    size: 1.8
+    unit: To
+  - name: disk_12
+    size: 1.8
+    unit: To
+  - name: disk_13
+    size: 1.8
+    unit: To
+  - name: disk_14
+    size: 1.8
+    unit: To
