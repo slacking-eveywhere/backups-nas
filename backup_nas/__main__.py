@@ -4,6 +4,7 @@
 import math
 from pathlib import Path
 from datetime import datetime
+from unittest.loader import VALID_MODULE_NAME
 from backup_nas.movie_model import MovieModel, create_movie_database_if_exists
 from backup_nas.disks import Disks
 
@@ -24,9 +25,12 @@ def list_movies_with_name_size_and_insert_date(movies_directory_path) -> iter:
 
 
 def humanize_size_output_from_bytes(size_in_bytes):
-    unit_index = int(math.floor(math.log(size_in_bytes, 1024)))
-    current_size = size_in_bytes / math.pow(1024, unit_index)
-    return f"{ round(current_size, 2) } { FILE_SIZE_UNITS[unit_index] }"
+    try:
+        unit_index = int(math.floor(math.log(size_in_bytes, 1024)))
+        current_size = size_in_bytes / math.pow(1024, unit_index)
+        return f"{ round(current_size, 2) } { FILE_SIZE_UNITS[unit_index] }"
+    except ValueError:
+        return "O B"
 
 
 if __name__ == "__main__":
@@ -47,5 +51,5 @@ if __name__ == "__main__":
             disk_id = movie_model.get_higher_disk_id() + 1
         movie_model.update_movie_with_disk_tag(movie.id, disk_id)
 
-    print(humanize_size_output_from_bytes(movie_model.get_movie_size_sum_by_disk_id(14)))
+    print(humanize_size_output_from_bytes(movie_model.get_movie_size_sum_by_disk_id(15)))
 

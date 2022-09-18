@@ -14,3 +14,7 @@ RUN python -m pip install -r requirements.txt
 
 
 FROM dev as exec
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
