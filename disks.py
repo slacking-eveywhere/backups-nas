@@ -21,15 +21,16 @@ class Disks:
     def load(self) -> 'Disks':
         with open(DISKS_FILE, 'r') as stream:
             try:
-                self.disks = [Disk(index, **disk) for index, disk in enumerate(yaml.safe_load(stream).get("disks"), start=1)]
+                self.disks = [Disk(index, **disk) for index, disk in enumerate(yaml.safe_load(stream).get("movies_disks"), start=1)]
                 return self
             except yaml.YAMLError as exc:
                 print(exc)
 
     def get_disk_by_index(self, disk_index: int) -> 'Disk':
-        for disk in self:
-            if disk.index == disk_index:
-                return disk
+        try:
+            return next(disk for disk in self if disk.index == disk_index)
+        except:
+            return None
 
 
 class Disk:

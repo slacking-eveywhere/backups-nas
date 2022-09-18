@@ -17,6 +17,15 @@ class Movie:
         self.create_time = create_time
         self.disk_id = disk_id
 
+    def __repr__(self) -> str:
+        return f"""
+            "id": { self.id }
+            "path": { self.path }
+            "size": { self.size }
+            "create_time": { self.create_time }
+            "disk_id": { self.disk_id }
+        """
+
     def get_movie_name(self) -> str:
         return self.path.name
 
@@ -43,7 +52,7 @@ class MovieModel:
 
     def get_movies_by_disk_id(self, disk_id: int) -> list:
         sql_comamnd = """
-        SELECT id, path, size, create_time
+        SELECT id, path, size, create_time, disk_id
         FROM movies
         WHERE disk_id = ?
         """
@@ -58,7 +67,7 @@ class MovieModel:
 
     def fetch_all(self) -> Generator[Movie, None, None]:
         sql_command = """
-        SELECT id, path, size, create_time
+        SELECT id, path, size, create_time, disk_id
         FROM movies;
         """
         for movie in self.connector.fetch_all(sql_command):
@@ -66,7 +75,7 @@ class MovieModel:
 
     def fetch_movies_not_disk_tagged(self) -> Generator[Movie, None, None]:
         sql_command = """
-        SELECT id, path, size, create_time
+        SELECT id, path, size, create_time, disk_id
         FROM movies
         WHERE disk_id IS NULL;
         """
